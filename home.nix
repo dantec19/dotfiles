@@ -16,6 +16,9 @@ in
     jq        # json on the command line
     lazygit
     neovim
+    # bearings dev toolchain (Emscripten stays in ~/emsdk, sourced by the repo scripts)
+    yarn      # classic 1.22.x, matches the repo's yarn.lock v1
+    cmake     # configures the C++/WASM build
     # the font everything renders in
     nerd-fonts.hack
   ];

@@ -1,15 +1,29 @@
 # global agent instructions
 
+## Working style
+
+- Match effort to the stakes. Do the simplest thing that fully answers the question or solves the problem, then stop.
+  Do not keep exploring, re-reading, or re-verifying what you have already established.
+- Be sure of what you say: verify a claim before stating it, and say plainly when you are not sure instead of guessing.
+  Enough evidence to be confident is enough - exhaustive proof is not the goal.
+- Prefer quality, simplicity, robustness and long term maintainability over shortcuts, but keep the solution proportional to the problem.
+  Do not build wrappers, control planes, policy layers, custom verifiers, or automation unless a concrete blocker or a repeated need justifies it.
+  For one-off or infrequent operational work, take the simplest direct end-to-end path.
+- Stay in scope. Fix what your own change touches or breaks.
+  For unrelated problems - a rough UI edge, a pre-existing test failure, flakiness, a lint warning - mention it in your report instead of fixing it, unless it is small and clearly in the way.
+
+## Bugs, tests and UI
+
+- Confirm the real cause before fixing, using the cheapest convincing evidence: a failing test, a log line, a direct trace through the code.
+  Reproduce end to end the way a user would when the cause is still unclear, or when the bug is user-visible behavior you cannot otherwise confirm - not as a default first step for every fix.
+- Cover the fix with a test at the level that actually pins the behavior, usually one.
+  Do not add broad suites, extra layers, or new harnesses unless asked.
+- When you are already looking at a UI, call out anything clearly wrong - broken layout, misalignment, wrong state - and fix it if it is part of your change.
+  Do not chase pixel-level polish unasked.
+
+## Always
+
 - Never use the em dash "—". Use plain dash "-" instead
 - When writing commit messages, NEVER auto-add your agent name as co-author
 - Never manually modify CHANGELOG.md files or any files that are marked as auto-generated
-- When making technical decisions, do not give much weight to development cost.
-  Instead, prefer quality, simplicity, robustness, scalability, and long term maintainability.
-- For one-off or infrequent operational work, start with the simplest direct end-to-end path. Do not build wrappers, control planes, policy layers, custom verifiers, or automation unless the direct path exposes a concrete blocker or repeated need that justifies the added machinery.
-- When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would experience it as possible.
-  This makes sure you find the real problem so your fix will actually solve it.
-- When end-to-end testing a product, be picky about the UI you see and be obsessed with pixel perfection.
-  If something clearly looks off, even if it is not directly related to what you are doing, try to get it fixed along the way.
-- Apply that same high standard to engineering excellence: lint, test failures, and test flakiness.
-  If you see one, even if it is not caused by what you are working on right now, still get it fixed.
-- Before using "dynamic workflows", "ultra code" or any harness feature that immediately spawns a large swarm of subagents, always explain the tradeoffs and ask the user for explicit approval.
+- Before using "dynamic workflows", "ultra code" or any harness feature that immediately spawns a large swarm of subagents, always explain the tradeoffs and ask for explicit approval
