@@ -57,6 +57,7 @@
       "wezterm"
       "claude-code@latest"  # latest/pre-release channel (newest models); NOT the stable "claude-code" cask
       "opensuperwhisper"
+      "hammerspoon"
     ];
   };
 }

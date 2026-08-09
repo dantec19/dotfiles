@@ -14,6 +14,7 @@ in
     fd        # fast find
     fzf       # fuzzy finder
     jq        # json on the command line
+    glow      # markdown in the terminal
     lazygit
     neovim
     # bearings dev toolchain (Emscripten stays in ~/emsdk, sourced by the repo scripts)
@@ -40,6 +41,8 @@ in
       m = "git switch main";
       cc = "claude --dangerously-skip-permissions";
       co = "codex --full-auto";
+      fleet     = "~/Developer/ai-workflow-kit/bin/fleet -C ~/Developer/citycompass-civica";
+      fleet-map = "~/Developer/ai-workflow-kit/bin/fleet-map -C ~/Developer/citycompass-civica";
     };
   };
 
@@ -65,6 +68,9 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/herdr";
   home.file.".claude/settings.json".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
+  # Just init.lua, not the whole dir - Hammerspoon writes Spoons/ at runtime.
+  home.file.".hammerspoon/init.lua".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.hammerspoon/init.lua";
 
   home.file.".claude/CLAUDE.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
