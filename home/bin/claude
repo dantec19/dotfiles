@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# claude account shim — the account follows the folder.
+#
+#   org folders  → dante@urbanly.com   (CLAUDE_CONFIG_DIR=~/.claude-urbanly)
+#   everywhere else → dantec19@gmail.com (default ~/.claude)
+#
+# Overrides, when the folder rule is wrong for the moment:
+#   CLAUDE_ACCOUNT=personal claude ...   one command on personal, anywhere
+#   CLAUDE_ACCOUNT=org claude ...        one command on org, anywhere
+#   export CLAUDE_ACCOUNT=personal       whole pane stays personal until unset
+#
+# This file lives in ~/dotfiles/home/bin/ and is symlinked to ~/.local/bin/claude,
+# which sits earlier in PATH than the real binary — so you, herdr, wezterm, and
+# any script all pass through the same rule. `which claude` should print the
+# symlink; if it prints /opt/homebrew/bin/claude the PATH order is wrong.
+
+REAL="/opt/homebrew/bin/claude"          # the actual binary (claude-code@latest cask)
+ORG_DIR="$HOME/.claude-urbanly"
+
+# The org list. A folder matches if $PWD lives under it. Edit freely; this is
+# the single source of truth for "which account does this project use".
+ORG_PREFIXES=(
+  "$HOME/Developer/citycompass"          # citycompass-civica and any rename
+  "$HOME/Developer/cc-w-"                # its worktrees
+  "$HOME/Developer/bearings"             # bearings + bearings-notes
+  "$HOME/Developer/masterplan-specs"     # local-only coordination for org work
+  # "$HOME/Developer/carpincho"          # uncomment the ones that are org work
+  # "$HOME/Developer/surtgis"
+)
+
+mode="${CLAUDE_ACCOUNT:-auto}"
+case "$mode" in
+  personal|me)
+    unset CLAUDE_CONFIG_DIR
+    ;;
+  org|work|urbanly)
+    export CLAUDE_CONFIG_DIR="$ORG_DIR"
+    ;;
+  auto)
+    unset CLAUDE_CONFIG_DIR
+    for p in "${ORG_PREFIXES[@]}"; do
+      case "$PWD/" in
+        "$p"*) export CLAUDE_CONFIG_DIR="$ORG_DIR"; break ;;
+      esac
+    done
+    ;;
+  *)
+    echo "claude-shim: unknown CLAUDE_ACCOUNT='$mode' (use personal|org|auto)" >&2
+    exit 1
+    ;;
+esac
+
+[ -x "$REAL" ] || { echo "claude-shim: real binary not found at $REAL" >&2; exit 127; }
+exec "$REAL" "$@"

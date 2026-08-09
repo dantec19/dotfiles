@@ -32,6 +32,8 @@ in
     syntaxHighlighting.enable = true;  # commands turn green when valid
     initContent = ''
       bindkey '^f' autosuggest-accept
+      # the claude account shim must win the PATH race (see home/bin/claude)
+      export PATH="$HOME/.local/bin:$PATH"
     '';
     shellAliases = {
       ".." = "cd ..";
@@ -77,5 +79,16 @@ in
   home.file.".codex/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
   home.file.".config/opencode/AGENTS.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
+
+  # Two claude accounts: the shim at ~/.local/bin/claude routes by folder
+  # (org repos -> ~/.claude-urbanly = dante@urbanly.com, everything else ->
+  # the default ~/.claude = personal). Overrides: CLAUDE_ACCOUNT=personal|org.
+  # The org world shares settings + global memory with the personal one.
+  home.file.".local/bin/claude".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/bin/claude";
+  home.file.".claude-urbanly/settings.json".source =
+    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.claude/settings.json";
+  home.file.".claude-urbanly/CLAUDE.md".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/AGENTS.md";
 }
